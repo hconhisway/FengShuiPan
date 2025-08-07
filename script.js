@@ -284,8 +284,6 @@ document.addEventListener('DOMContentLoaded', () => {
         • Click and drag any visible part of a layer to rotate it<br>
         • 7 layers total, layer1 (smallest) is on top<br>
         • Each layer can be rotated independently<br>
-        • Upper layers naturally cover lower layers<br>
-        • Works on desktop and mobile devices<br>
         <br>
     `;
     container.appendChild(instructions);
