@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Feng Shui Wheel - Layer Size Adjuster</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2d5a27 0%, #4a8041 50%, #6ba762 100%);
+            min-height: 100vh;
+            margin: 0;
+            padding: 10px;
+            color: white;
+            overflow-x: auto;
+        }
+        
+        .controls {
+            max-width: 400px;
+            margin: 0 auto 10px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .layer-control {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            gap: 10px;
+        }
+        
+        .layer-control label {
+            min-width: 80px;
+            font-weight: bold;
+        }
+        
+        .layer-control input[type="range"] {
+            flex: 1;
+            margin: 0 10px;
+        }
+        
+        .layer-control input[type="number"] {
+            width: 70px;
+            padding: 5px;
+            border: none;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            text-align: center;
+        }
+        
+        .layer-control input[type="number"]:focus {
+            outline: 2px solid rgba(76, 175, 80, 0.6);
+        }
+        
+        .preset-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .preset-btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(76, 175, 80, 0.7);
+            color: white;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background 0.3s ease;
+        }
+        
+        .preset-btn:hover {
+            background: rgba(76, 175, 80, 0.9);
+        }
+        
+        .wheel-frame {
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            padding: 20px;
+            margin: 0 auto;
+            display: inline-block;
+        }
+        
+        .info {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+    <div class="controls">
+        <h3 style="text-align: center; margin-bottom: 20px;">Layer Size Controls</h3>
+        
+        <div class="layer-control">
+            <label>Layer 1:</label>
+            <input type="range" id="layer1" min="50" max="2000" value="200" step="5">
+            <input type="number" id="layer1-num" min="50" max="2000" value="200" step="5">
+        </div>
+        
+        <div class="layer-control">
+            <label>Layer 2:</label>
+            <input type="range" id="layer2" min="50" max="2000" value="250" step="5">
+            <input type="number" id="layer2-num" min="50" max="2000" value="250" step="5">
+        </div>
+        
+        <div class="layer-control">
+            <label>Layer 3:</label>
+            <input type="range" id="layer3" min="50" max="2000" value="300" step="5">
+            <input type="number" id="layer3-num" min="50" max="2000" value="300" step="5">
+        </div>
+        
+        <div class="layer-control">
+            <label>Layer 4:</label>
+            <input type="range" id="layer4" min="50" max="2000" value="350" step="5">
+            <input type="number" id="layer4-num" min="50" max="2000" value="350" step="5">
+        </div>
+        
+        <div class="layer-control">
+            <label>Layer 5:</label>
+            <input type="range" id="layer5" min="50" max="2000" value="400" step="5">
+            <input type="number" id="layer5-num" min="50" max="2000" value="400" step="5">
+        </div>
+        
+        <div class="layer-control">
+            <label>Layer 6:</label>
+            <input type="range" id="layer6" min="50" max="2000" value="450" step="5">
+            <input type="number" id="layer6-num" min="50" max="2000" value="450" step="5">
+        </div>
+        
+        <div class="layer-control">
+            <label>Layer 7:</label>
+            <input type="range" id="layer7" min="50" max="2000" value="500" step="5">
+            <input type="number" id="layer7-num" min="50" max="2000" value="500" step="5">
+        </div>
+        
+        <div class="preset-buttons">
+            <button class="preset-btn" onclick="applyPreset('small')">Small</button>
+            <button class="preset-btn" onclick="applyPreset('medium')">Medium</button>
+            <button class="preset-btn" onclick="applyPreset('large')">Large</button>
+            <button class="preset-btn" onclick="applyPreset('xlarge')">X-Large</button>
+            <button class="preset-btn" onclick="applyPreset('equal')">Equal</button>
+            <button class="preset-btn" onclick="resetSizes()">Reset</button>
+        </div>
+        
+        <div class="info">
+            <p>Adjust each layer size individually or use presets</p>
+            <p><strong>Tip:</strong> Open browser console to see applied values</p>
+        </div>
+    </div>
+    
+    <div style="text-align: center;">
+        <div class="wheel-frame">
+            <iframe src="index.html" id="wheelIframe" frameborder="0"></iframe>
+        </div>
+    </div>
+
+    <script>
+        // 动态设置iframe大小以占满屏幕
+        function resizeIframe() {
+            const iframe = document.getElementById('wheelIframe');
+            const availableHeight = window.innerHeight - 320; // 减去控制面板高度
+            const availableWidth = window.innerWidth - 40; // 减去padding
+            const size = Math.min(availableHeight, availableWidth);
+            
+            iframe.width = size;
+            iframe.height = size;
+        }
+        
+        // 初始化大小
+        resizeIframe();
+        
+        // 窗口大小变化时重新调整
+        window.addEventListener('resize', resizeIframe);
+    </script>
+
+    <script>
+        // 预设配置
+        const presets = {
+            small: [150, 200, 250, 300, 350, 400, 450],
+            medium: [200, 250, 300, 350, 400, 450, 500],
+            large: [400, 500, 600, 700, 800, 900, 1000],
+            xlarge: [600, 750, 900, 1050, 1200, 1350, 1500],
+            equal: [500, 500, 500, 500, 500, 500, 500]
+        };
+
+        // 初始化事件监听器
+        for (let i = 1; i <= 7; i++) {
+            const slider = document.getElementById(`layer${i}`);
+            const numberInput = document.getElementById(`layer${i}-num`);
+            
+            // 滑块变化时更新数字输入框和应用大小
+            slider.addEventListener('input', function() {
+                numberInput.value = this.value;
+                updateLayerSize(i, this.value);
+            });
+            
+            // 数字输入框变化时更新滑块和应用大小
+            numberInput.addEventListener('input', function() {
+                slider.value = this.value;
+                updateLayerSize(i, this.value);
+            });
+        }
+
+        function updateLayerSize(layerNum, size) {
+            const iframe = document.querySelector('iframe');
+            if (iframe && iframe.contentWindow && iframe.contentWindow.fengShuiWheel) {
+                iframe.contentWindow.fengShuiWheel.setLayerSize(`layer${layerNum}`, parseInt(size));
+                console.log(`Layer ${layerNum} size set to ${size}px`);
+            }
+        }
+
+        function applyPreset(presetName) {
+            const sizes = presets[presetName];
+            if (!sizes) return;
+            
+            // 更新UI控件
+            for (let i = 0; i < 7; i++) {
+                const layerNum = i + 1;
+                const slider = document.getElementById(`layer${layerNum}`);
+                const numberInput = document.getElementById(`layer${layerNum}-num`);
+                
+                slider.value = sizes[i];
+                numberInput.value = sizes[i];
+            }
+            
+            // 应用到iframe中的轮盘
+            const iframe = document.querySelector('iframe');
+            if (iframe && iframe.contentWindow && iframe.contentWindow.fengShuiWheel) {
+                iframe.contentWindow.fengShuiWheel.setAllLayerSizes(sizes);
+                console.log(`Applied preset: ${presetName}`, sizes);
+            }
+        }
+
+        function resetSizes() {
+            applyPreset('medium');
+        }
+
+        // 等待iframe加载完成
+        window.addEventListener('load', function() {
+            const iframe = document.querySelector('iframe');
+            iframe.addEventListener('load', function() {
+                console.log('Iframe loaded, controls ready');
+                // 应用默认大小
+                setTimeout(() => {
+                    applyPreset('medium');
+                }, 500);
+            });
+        });
+    </script>
+</body>
+</html> 
